@@ -1,0 +1,28 @@
+name: Build and release kernel images
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: capmvm/kernel
+
+jobs:
+  kernel:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ 4.19.215, 5.10.77 ]
+    env:
+      KERNEL_VERSIONS: ${{ matrix.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to container registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - run: make
+      # - run: make push
