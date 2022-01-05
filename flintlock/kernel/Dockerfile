@@ -1,4 +1,5 @@
-FROM weaveworks/capmvm-kernel-builder:dev AS builder
+ARG IMAGE_NAME
+FROM ${IMAGE_NAME}:dev AS builder
 
 ENV SRC_DIR=/usr/src            \
     DIST_DIR=/dist              \
@@ -15,10 +16,11 @@ WORKDIR ${LINUX_DIR}
 
 COPY configs/linux-x86_64-${KERNEL_VERSION}.config .config
 
-RUN make
+RUN make LOCALVERSION= modules_install
 
 RUN cp vmlinux /boot/vmlinux && \
     cp .config /boot/config-${KERNEL_VERSION}
 
 FROM scratch
 COPY --from=builder /boot /boot
+COPY --from=bulder /lib/modules /lib/modules
