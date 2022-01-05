@@ -23,6 +23,7 @@ jobs:
       - name: Build kernel
         run: make
   release:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
