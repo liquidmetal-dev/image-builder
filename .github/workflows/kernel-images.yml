@@ -1,0 +1,45 @@
+name: Build and release kernel images
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: flintlock/kernel
+
+jobs:
+  build:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ 4.19.215, 5.10.77 ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build kernel
+        run: make
+  release:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ 4.19.215, 5.10.77 ]
+    env:
+      KERNEL_VERSIONS: ${{ matrix.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to container registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        run: |
+          make
+          make push
