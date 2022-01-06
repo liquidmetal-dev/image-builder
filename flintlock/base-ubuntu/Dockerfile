@@ -3,12 +3,13 @@ FROM ubuntu:${OS_VERSION}
 
 RUN apt-get update && apt-get install -y \
         systemd \
-        systemd-sysv \
         udev \
         kmod \
         dbus \
         iproute2 \
+        iputils-ping \
         net-tools \
+        cloud-init \
         sudo \
         curl \
         wget && \
@@ -16,5 +17,4 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 RUN echo "" > /etc/machine-id
-
 RUN echo "root:root" | chpasswd

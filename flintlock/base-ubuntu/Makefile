@@ -1,7 +1,7 @@
 DOCKER := docker
 
 REGISTRY?=gcr.io/weaveworks
-IMAGE_NAME?=$(REGISTRY)/capmvm-ubuntu-base
+IMAGE_NAME?=$(REGISTRY)/flintlock-ubuntu-base
 RELEASE?=20.04
 IS_LATEST?=
 
