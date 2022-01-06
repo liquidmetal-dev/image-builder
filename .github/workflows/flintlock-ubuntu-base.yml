@@ -1,4 +1,4 @@
-name: Build and release kernel images
+name: Build and release base ubuntu images
 
 on:
   pull_request:
