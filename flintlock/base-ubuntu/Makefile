@@ -1,19 +1,16 @@
 DOCKER := docker
 
-REGISTRY?=gcr.io/weaveworks
+REGISTRY?=ghcr.io/weaveworks
 IMAGE_NAME?=$(REGISTRY)/flintlock-ubuntu-base
 RELEASE?=20.04
 IS_LATEST?=
+TAG?=$(shell git rev-parse --short HEAD)
 
 build:
 	$(DOCKER) build -t $(IMAGE_NAME):$(RELEASE) \
 		--build-arg OS_VERSION=$(RELEASE) .
-ifeq ($(IS_LATEST),true)
-	$(DOCKER) tag $(IMAGE_NAME) latest
-endif
+	$(DOCKER) tag $(IMAGE_NAME):$(RELEASE) $(IMAGE_NAME):$(TAG)
 
 push:
 	$(DOCKER) push $(IMAGE_NAME):$(RELEASE)
-ifeq ($(IS_LATEST),true)
-	$(DOCKER) push $(IMAGE_NAME):latest
-endif
+	$(DOCKER) push $(IMAGE_NAME):$(TAG)

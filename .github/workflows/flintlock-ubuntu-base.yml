@@ -3,11 +3,11 @@ name: Build and release base ubuntu images
 on:
   pull_request:
     paths:
-      - 'flintlock/base-ubuntu'
+      - 'flintlock/base-ubuntu/**'
     branches: [main]
   push:
     paths:
-      - 'flintlock/base-ubuntu'
+      - 'flintlock/base-ubuntu/**'
     branches: [main]
 
 defaults:
