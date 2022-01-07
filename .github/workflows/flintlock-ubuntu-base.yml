@@ -1,40 +1,30 @@
-name: Build and release kernel images
+name: Build and release base ubuntu images
 
 on:
   pull_request:
     paths:
-      - 'flintlock/kernel'
+      - 'flintlock/base-ubuntu'
     branches: [main]
   push:
     paths:
-      - 'flintlock/kernel'
+      - 'flintlock/base-ubuntu'
     branches: [main]
 
 defaults:
   run:
-    working-directory: flintlock/kernel
+    working-directory: flintlock/base-ubuntu
 
 jobs:
   build:
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        version: [ 4.19.215, 5.10.77 ]
     steps:
       - uses: actions/checkout@v2
-      - name: Build kernel
+      - name: Build image
         run: make
   release:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        version: [ 4.19.215, 5.10.77 ]
-    env:
-      KERNEL_VERSIONS: ${{ matrix.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Login to container registry
