@@ -9,12 +9,13 @@ RUN apt-get update && apt-get install -y \
         iproute2 \
         iputils-ping \
         net-tools \
-        cloud-init \
+        openssh-server \
+        dnsutils \
         sudo \
         curl \
+        cloud-init \
+        linux-image-virtual  \
         wget && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN echo "" > /etc/machine-id
-RUN echo "root:root" | chpasswd
+    rm -rf /var/lib/apt/lists/* && \
+    sed -i -e 's/^AcceptEnv LANG LC_\*$/#AcceptEnv LANG LC_*/' /etc/ssh/sshd_config
