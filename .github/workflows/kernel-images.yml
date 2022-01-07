@@ -3,11 +3,11 @@ name: Build and release kernel images
 on:
   pull_request:
     paths:
-      - 'flintlock/kernel'
+      - 'flintlock/kernel/**'
     branches: [main]
   push:
     paths:
-      - 'flintlock/kernel'
+      - 'flintlock/kernel/**'
     branches: [main]
 
 defaults:

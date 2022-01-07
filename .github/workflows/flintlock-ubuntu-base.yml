@@ -3,11 +3,11 @@ name: Build and release base ubuntu images
 on:
   pull_request:
     paths:
-      - 'flintlock/base-ubuntu'
+      - 'flintlock/base-ubuntu/**'
     branches: [main]
   push:
     paths:
-      - 'flintlock/base-ubuntu'
+      - 'flintlock/base-ubuntu/**'
     branches: [main]
 
 defaults:
@@ -35,5 +35,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         run: |
-          make
-          make push
+          make IS_LATEST=true
+          make push IS_LATEST=true
