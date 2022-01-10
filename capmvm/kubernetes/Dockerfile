@@ -46,7 +46,7 @@ RUN mkdir -p /etc/containerd && containerd config default > /etc/containerd/conf
 RUN systemctl enable containerd
 
 RUN echo '[Service] \n\
-Environment="KUBELET_EXTRA_ARGS=--container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock\"' \
+Environment="KUBELET_EXTRA_ARGS=--container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock"' \
     >> /etc/systemd/system/kubelet.service.d/0-containerd.conf
 
 RUN systemctl enable kubelet
