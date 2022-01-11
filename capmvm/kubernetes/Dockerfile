@@ -1,5 +1,6 @@
 FROM ghcr.io/weaveworks/flintlock-ubuntu-base:20.04
 
+
 ARG ARCH="amd64"
 ARG CONTAINERD_VERSION=1.5.9
 # Kubernetes version will be used to keep the kubeadm, kubelet, and kubectl version consistent
@@ -12,7 +13,8 @@ RUN apt-get update && apt-get install -y \
         ca-certificates \
         gnupg2 \
         software-properties-common \
-        libseccomp2
+        libseccomp2 \
+        jq
 
 #### Let iptables see bridged traffic ###
 RUN echo "overlay \n\
