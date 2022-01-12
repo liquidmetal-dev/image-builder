@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
         curl \
         cloud-init \
         linux-image-virtual  \
+        less \
         wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
