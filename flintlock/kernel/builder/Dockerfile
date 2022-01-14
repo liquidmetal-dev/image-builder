@@ -12,5 +12,6 @@ RUN apt-get update -y && \
         libncurses-dev      \
         libssl-dev          \
         ca-certificates     \
+        kmod                \
         wget             && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 10
