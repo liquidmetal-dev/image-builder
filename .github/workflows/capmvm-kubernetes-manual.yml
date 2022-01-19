@@ -6,7 +6,7 @@ on:
 
 defaults:
   run:
-    working-directory: flintlock/base-ubuntu
+    working-directory: capmvm/kubernetes
 
 jobs:
   release:
