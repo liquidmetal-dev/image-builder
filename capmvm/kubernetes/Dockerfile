@@ -45,6 +45,7 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /etc/containerd && containerd config default > /etc/containerd/config.toml
+RUN rm /etc/cni/net.d/10-containerd-net.conflist
 RUN systemctl enable containerd
 
 RUN echo '[Service] \n\
