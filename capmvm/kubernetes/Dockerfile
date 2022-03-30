@@ -22,8 +22,15 @@ br_netfilter" >> /etc/modules-load.d/containerd.conf
 
 # Setup required sysctl params, these persist across reboots.
 RUN echo "net.bridge.bridge-nf-call-iptables  = 1 \n\
+net.bridge.bridge-nf-call-ip6tables = 1 \n\
 net.ipv4.ip_forward                 = 1 \n\
-net.bridge.bridge-nf-call-ip6tables = 1" >> /etc/sysctl.d/99-kubernetes-cri.conf
+net.ipv6.conf.all.forwarding = 1 \n\
+net.ipv6.conf.all.disable_ipv6 = 0 \n\
+net.ipv4.tcp_congestion_control = bbr \n\
+vm.overcommit_memory = 1 \n\
+kernel.panic = 10 \n\
+net.ipv4.conf.all.rp_filter = 1 \n\
+kernel.panic_on_oops = 1" >> /etc/sysctl.d/99-kubernetes-cri.conf
 
 # Apply sysctl params without reboot
 RUN sysctl --system
@@ -42,7 +49,8 @@ RUN apt-get update && apt-get install -y \
         kubelet=${KUBERNETES_VERSION}-00 \
         kubectl=${KUBERNETES_VERSION}-00 && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    apt-mark hold kubelet kubeadm kubectl
 
 RUN mkdir -p /etc/containerd && containerd config default > /etc/containerd/config.toml
 RUN rm /etc/cni/net.d/10-containerd-net.conflist
