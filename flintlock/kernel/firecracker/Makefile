@@ -1,8 +1,8 @@
 DOCKER := docker
 
 REGISTRY?=ghcr.io/weaveworks
-IMAGE_NAME?=$(REGISTRY)/flintlock-kernel
-BUILDER_IMAGE_NAME?=flintlock-kernel-builder
+IMAGE_NAME?=$(REGISTRY)/flintlock-kernel-firecracker
+BUILDER_IMAGE_NAME?=flintlock-kernel-builder-firecracker
 KERNEL_VERSIONS ?= 4.19.215 5.10.77 # If you update this list, please remember to update the matrix in the kernel-images.yml github action!
 
 all: build

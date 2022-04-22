@@ -1,4 +1,4 @@
-name: Build and release capmvm kubernetes images
+name: Build and release capmvm images (CloudHypervisor) - Manual
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
 
 defaults:
   run:
-    working-directory: capmvm/kubernetes
+    working-directory: capmvm/cloudhypervisor
 
 jobs:
   release:
