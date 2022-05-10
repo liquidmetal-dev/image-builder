@@ -1,4 +1,4 @@
-name: Build and release kernel images
+name: Kernel - Build and release
 
 on:
   pull_request:
