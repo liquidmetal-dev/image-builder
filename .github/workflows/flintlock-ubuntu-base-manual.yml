@@ -1,13 +1,7 @@
-name: Ubuntu Base - Build and release
+name: Ubuntu Base (manual) - Build and release
 
 on:
-  pull_request:
-    paths:
-      - 'flintlock/base-ubuntu/**'
-    branches: [main]
-  push:
-    paths:
-      - 'flintlock/base-ubuntu/**'
+  workflow_dispatch:
     branches: [main]
 
 defaults:
@@ -15,17 +9,7 @@ defaults:
     working-directory: flintlock/base-ubuntu
 
 jobs:
-  build:
-    if: github.event_name != 'push'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build image
-        run: make
   release:
-    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
