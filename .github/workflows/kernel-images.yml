@@ -18,6 +18,8 @@ jobs:
   build:
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -29,6 +31,9 @@ jobs:
   release:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+          contents: read
+          packages: write
     strategy:
       fail-fast: false
       matrix:
