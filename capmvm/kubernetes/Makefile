@@ -2,7 +2,7 @@ DOCKER := docker
 BUILD_DATE:=$(shell date --rfc-3339=seconds)
 GIT_SHA:=$(shell git rev-parse HEAD)
 
-REGISTRY?=ghcr.io/weaveworks
+REGISTRY?=ghcr.io/weaveworks-liquidmetal
 IMAGE_NAME?=$(REGISTRY)/capmvm-kubernetes
 CONTAINERD_VERSION?=1.5.9
 TAG?=$(shell git rev-parse --short HEAD)
@@ -16,8 +16,8 @@ build-%:
 		--build-arg CONTAINERD_VERSION=$(CONTAINERD_VERSION) \
 		--label "org.opencontainers.image.created"="$(BUILD_DATE)" \
 		--label "org.opencontainers.image.authors"="Liquid Metal Authors" \
-		--label "org.opencontainers.image.url"="https://github.com/weaveworks/image-builder" \
-		--label "org.opencontainers.image.source"="https://github.com/weaveworks/image-builder/tree/main/capmvm/kubernetes" \
+		--label "org.opencontainers.image.url"="https://github.com/weaveworks-liquidmetal/image-builder" \
+		--label "org.opencontainers.image.source"="https://github.com/weaveworks-liquidmetal/image-builder/tree/main/capmvm/kubernetes" \
 		--label "org.opencontainers.image.revision"="$(GIT_SHA)" \
 		--label "org.opencontainers.image.vendor"="Weaveworks" \
 		--label "org.opencontainers.image.licenses"="MPL-2.0" \
