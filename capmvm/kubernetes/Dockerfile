@@ -1,4 +1,4 @@
-FROM ghcr.io/weaveworks/flintlock-ubuntu-base:20.04
+FROM ghcr.io/weaveworks-liquidmetal/flintlock-ubuntu-base:20.04
 
 
 ARG ARCH="amd64"
