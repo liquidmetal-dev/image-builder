@@ -1,6 +1,6 @@
 DOCKER := docker
 
-REGISTRY?=ghcr.io/weaveworks
+REGISTRY?=ghcr.io/weaveworks-liquidmetal
 IMAGE_NAME?=$(REGISTRY)/flintlock-ubuntu-base
 RELEASE?=20.04
 IS_LATEST?=
