@@ -7,7 +7,7 @@ IMAGE_NAME?=$(REGISTRY)/capmvm-kubernetes
 CONTAINERD_VERSION?=1.5.9
 TAG?=$(shell git rev-parse --short HEAD)
 
-RELEASE_VERSIONS?=1.21.8 1.22.8 1.23.5 # RELEASE follows the kubernetes release
+RELEASE_VERSIONS?=1.21.8 1.22.3 1.22.8 1.23.5 # RELEASE follows the kubernetes release
 
 build: $(addprefix build-,$(RELEASE_VERSIONS))
 build-%:
