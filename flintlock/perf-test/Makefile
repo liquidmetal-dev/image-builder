@@ -6,6 +6,7 @@ REGISTRY?=ghcr.io/weaveworks-liquidmetal
 IMAGE_NAME?=$(REGISTRY)/flintlock-ubuntu-perftest
 TAG?=$(shell git rev-parse --short HEAD)
 IPERF3_VERSION?=3.9-1
+GEEKBENCH_VERSION?=5.4.5
 
 build:
 	$(DOCKER) build -t $(IMAGE_NAME):$(TAG)  \
@@ -20,6 +21,7 @@ build:
 		--label "org.opencontainers.image.title"="Ubuntu based perf testing image" \
 		--label "org.opencontainers.image.description"="A image to use for perf testing microvms" \
 		--label "works.weave.liquidmetal.iperf3"="$(IPERF3_VERSION)" \
+		--label "works.weave.liquidmetal.geekbench"="$(GEEKBENCH_VERSION)" \
 		.
 
 push:
