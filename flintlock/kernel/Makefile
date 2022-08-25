@@ -20,3 +20,9 @@ build-%: kernel-builder
 push: $(addprefix push-,$(KERNEL_VERSIONS))
 push-%:
 	$(DOCKER) push $(IMAGE_NAME):$*
+
+
+build-modules-test: build-5.10.77
+	$(DOCKER) build -t richardcase/flintlock-kernel-modules:5.10.77 \
+		--build-arg KERNEL_REGISTRY=$(REGISTRY) \
+		-f Dockerfile-modules .

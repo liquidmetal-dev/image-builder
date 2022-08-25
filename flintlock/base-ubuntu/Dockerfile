@@ -1,8 +1,8 @@
 ARG OS_VERSION
-ARG KERNEL_REGISTRY
+#ARG KERNEL_REGISTRY
 
-FROM ${KERNEL_REGISTRY}/flintlock-kernel:5.10.77 as kernel51077
-FROM ${KERNEL_REGISTRY}/flintlock-kernel:4.19.215 as kernel419215
+#FROM ${KERNEL_REGISTRY}/flintlock-kernel:5.10.77 as kernel51077
+#FROM ${KERNEL_REGISTRY}/flintlock-kernel:4.19.215 as kernel419215
 
 FROM ubuntu:${OS_VERSION}
 
@@ -28,5 +28,5 @@ RUN apt-get update && apt-get install -y \
     mkdir -p /lib/modules
 
 # Add modules from the 2 kernel images we support
-COPY --from=kernel51077 /lib /lib
-COPY --from=kernel419215 /lib /lib
+#COPY --from=kernel51077 /lib /lib
+#COPY --from=kernel419215 /lib /lib

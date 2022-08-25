@@ -1,0 +1,8 @@
+ARG KERNEL_REGISTRY
+
+FROM ${KERNEL_REGISTRY}/flintlock-kernel:5.10.77 as kernel51077
+
+FROM scratch
+
+# Add modules from the 2 kernel images we support
+COPY --from=kernel51077 /lib/modules/5.10.77 /
