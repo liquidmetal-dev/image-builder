@@ -1,6 +1,6 @@
 DOCKER := docker
 
-REGISTRY?=ghcr.io/weaveworks
+REGISTRY?=ghcr.io/weaveworks-liquidmetal
 IMAGE_NAME?=$(REGISTRY)/flintlock-kernel-cloudhypervisor
 BUILDER_IMAGE_NAME?=flintlock-kernel-builder-ch
 CH_VERSION ?= 23.0
