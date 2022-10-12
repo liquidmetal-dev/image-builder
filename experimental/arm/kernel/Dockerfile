@@ -21,7 +21,10 @@ RUN make LOCALVERSION= olddefconfig
 RUN make LOCALVERSION= -j32
 RUN make LOCALVERSION= modules_install
 
-RUN cp vmlinux /boot/vmlinux && \
+RUN make Image
+
+# RUN cp vmlinux /boot/vmlinux && \
+RUN cp ./arch/arm64/boot/Image /boot/image && \
     cp .config /boot/config-${KERNEL_VERSION}
 
 FROM scratch
