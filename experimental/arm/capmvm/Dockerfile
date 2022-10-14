@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
         gnupg2 \
         software-properties-common \
         libseccomp2 \
+        iptables \
         jq
 
 #### Let iptables see bridged traffic ###
