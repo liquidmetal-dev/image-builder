@@ -1,0 +1,43 @@
+name: Build and release capmvm kubernetes images (ARM)
+
+on:
+  pull_request:
+    paths:
+      - 'experimental/arm/capmvm/**'
+    branches: [main]
+  push:
+    paths:
+      - 'experimental/arm/capmvm/**'
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: experimental/arm/capmvm
+
+jobs:
+  # build:
+  #   if: github.event_name != 'push'
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: read
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Build image
+  #       run: make
+  release:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to container registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        run: |
+          make build-and-push

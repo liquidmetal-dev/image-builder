@@ -23,7 +23,6 @@ RUN make LOCALVERSION= modules_install
 
 RUN make Image
 
-# RUN cp vmlinux /boot/vmlinux && \
 RUN cp ./arch/arm64/boot/Image /boot/image && \
     cp .config /boot/config-${KERNEL_VERSION}
 

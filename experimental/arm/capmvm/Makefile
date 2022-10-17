@@ -9,8 +9,8 @@ TAG?=$(shell git rev-parse --short HEAD)
 
 RELEASE_VERSIONS?=1.21.8 1.22.8 1.23.5 # RELEASE follows the kubernetes release
 
-build: $(addprefix build-,$(RELEASE_VERSIONS))
-build-%:
+build-and-push: $(addprefix build-and-push-,$(RELEASE_VERSIONS))
+build-and-push-%: buildx
 	$(DOCKER) buildx build --platform arm64 -t $(IMAGE_NAME):$*  \
 		--build-arg KUBERNETES_VERSION=$* \
 		--build-arg CONTAINERD_VERSION=$(CONTAINERD_VERSION) \
@@ -28,7 +28,5 @@ build-%:
 		--label "works.weave.liquidmetal.containerd"="$(CONTAINERD_VERSION)" \
 		--push .
 
-
-push: $(addprefix push-,$(RELEASE_VERSIONS))
-push-%:
-	$(DOCKER) push $(IMAGE_NAME):$*
+buildx:
+	$(DOCKER) buildx create --name armbuilder --use --bootstrap
