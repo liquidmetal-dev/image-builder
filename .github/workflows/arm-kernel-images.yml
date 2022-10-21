@@ -1,6 +1,8 @@
 name: Build and release kernel images (ARM)
 
 on:
+  workflow_dispatch:
+    branches: [main]
   pull_request:
     paths:
       - 'experimental/arm/kernel/**'
