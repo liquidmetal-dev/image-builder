@@ -1,15 +1,8 @@
-DOCKER := docker
-BUILD_DATE:=$(shell date --rfc-3339=seconds)
-GIT_SHA:=$(shell git rev-parse HEAD)
 
-REGISTRY?=ghcr.io/weaveworks-liquidmetal
-IMAGE_NAME?=$(REGISTRY)/capmvm-kubernetes
-BASE_IMAGE?=docker.io/claudiaberesford/ubuntu-base # TODO reset this
+VERSIONS?=1.23.10 # VERSIONS follows the kubernetes release
+# VERSIONS?=1.21.8 1.22.3 1.22.8 1.23.5 # VERSIONS follows kubernetes release versions
 
-RELEASE_VERSIONS?=1.23.10 # RELEASE follows the kubernetes release
-# RELEASE_VERSIONS?=1.21.8 1.22.3 1.22.8 1.23.5 # RELEASE follows the kubernetes release
-
-build: $(addprefix build-,$(RELEASE_VERSIONS))
+build: $(addprefix build-,$(VERSIONS))
 build-%:
 	$(DOCKER) build -t $(IMAGE_NAME):$*  \
 		--build-arg BASE_IMAGE=$(BASE_IMAGE):v$* \ # TODO remove the v here and from the published bases
@@ -25,6 +18,6 @@ build-%:
 		--label "works.weave.liquidmetal.kubernetes"="$*" \
 		.
 
-push: $(addprefix push-,$(RELEASE_VERSIONS))
+push: $(addprefix push-,$(VERSIONS))
 push-%:
 	$(DOCKER) push $(IMAGE_NAME):$*
