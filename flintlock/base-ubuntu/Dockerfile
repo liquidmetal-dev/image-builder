@@ -21,7 +21,8 @@ RUN apt-get update && apt-get install -y \
         cloud-init \
         linux-image-virtual  \
         less \
-        wget && \
+        wget 
+        nfs-common && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     sed -i -e 's/^AcceptEnv LANG LC_\*$/#AcceptEnv LANG LC_*/' /etc/ssh/sshd_config && \
