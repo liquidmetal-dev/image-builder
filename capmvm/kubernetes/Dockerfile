@@ -1,20 +1,36 @@
-FROM ghcr.io/weaveworks-liquidmetal/flintlock-ubuntu-base:20.04
-
+ARG OS_VERSION=20.04
+FROM ubuntu:${OS_VERSION}
 
 ARG ARCH="amd64"
 ARG CONTAINERD_VERSION=1.5.9
 # Kubernetes version will be used to keep the kubeadm, kubelet, and kubectl version consistent
 ARG KUBERNETES_VERSION=1.21.8
 
-
 RUN apt-get update && apt-get install -y \
+        kmod \
+        dbus \
+        iproute2 \
+        iputils-ping \
+        net-tools \
+        openssh-server \
+        dnsutils \
+        sudo \
+        curl \
+        cloud-init \
+        linux-image-virtual  \
+        less \
+        udev \
         wget \
         apt-transport-https \
         ca-certificates \
         gnupg2 \
         software-properties-common \
         libseccomp2 \
-        jq
+        systemd \
+        jq && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    sed -i -e 's/^AcceptEnv LANG LC_\*$/#AcceptEnv LANG LC_*/' /etc/ssh/sshd_config
 
 #### Let iptables see bridged traffic ###
 RUN echo "overlay \n\
@@ -37,7 +53,7 @@ RUN sysctl --system
 
 # Install Containerd
 RUN wget https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/cri-containerd-cni-${CONTAINERD_VERSION}-linux-${ARCH}.tar.gz
-RUN tar --no-overwrite-dir -C / -xzf cri-containerd-cni-${CONTAINERD_VERSION}-linux-amd64.tar.gz && rm -f cri-containerd-cni-${CONTAINERD_VERSION}-linux-amd64.tar.gz
+RUN tar --no-overwrite-dir -C / -xzf cri-containerd-cni-${CONTAINERD_VERSION}-linux-${ARCH}.tar.gz && rm -f cri-containerd-cni-${CONTAINERD_VERSION}-linux-${ARCH}.tar.gz
 
 ### Add apt repos
 # Kubeadm, Kubelet, and Kubectl
