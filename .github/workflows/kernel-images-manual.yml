@@ -6,7 +6,7 @@ on:
 
 defaults:
   run:
-    working-directory: flintlock/kernel
+    working-directory: kernel
 
 jobs:
   release:
