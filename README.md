@@ -1,38 +1,17 @@
 # image-builder
-Image building for Weaveworks projects.
+Image building for Weaveworks Liquid Metal.
 
+The images created by this pipeline can be used in [CAPMVM][capmvm] and [Flintlock][flint]
+specs to create Microvms.
 
-## How to build your own custom images
+For kernel image builder instructions, see the doc [here][k-docs].
 
-1. Fork this repo, clone your fork
-1. There are several images here, each building from the last, key ones are:
-	- `flintlock/base-ubuntu` - the base of the rootfs for any microvm
-	- `flintlock/kernel/builder` - the base/builder image for the kernel
-	- `flintlock/kernel` - the kernel for any microvm
-	- `capmvm/kubernetes` - the rootfs for any microvm
-1. Make changes accordingly
-1. Build your images from the point of the change, the sequence is as follows,
-	jump in where you need to.
+For OS/k8s image builder instructions, see the doc [here][os-docs].
 
-	```bash
-	export REGISTRY=docker.io/your-reg
+Experimental images can be found [here][exp].
 
-	cd flintlock/kernel
-	make build
-	make push
-
-	cd ../base-ubuntu
-	make build
-	make push
-
-	cd ../../capmvm/kubernetes
-	make build
-	make push
-	```
-
-Your images should end up in your registry. The ones named `flintlock-kernel`
-and `capmvm-kubernetes` are the ones you want to set in your capmvm or flintlock
-spec.
-
-> Note: These build scripts are not polished, so there may be errors.
-
+[capmvm]: https://github.com/weaveworks-liquidmetal/cluster-api-provider-microvm
+[flint]: https://github.com/weaveworks-liquidmetal/flintlock
+[k-docs]: https://github.com/weaveworks-liquidmetal/image-builder/tree/main/kernel
+[os-docs]: https://github.com/weaveworks-liquidmetal/image-builder/blob/main/capmvm/kubernetes
+[exp]: https://github.com/weaveworks-liquidmetal/image-builder/tree/main/experimental
