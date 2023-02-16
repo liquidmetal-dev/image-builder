@@ -1,4 +1,4 @@
-name: Kernel - Build and release
+name: Build and release kernel images
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ defaults:
     working-directory: kernel
 
 jobs:
-  build:
+  build-firecracker:
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
     permissions:
@@ -24,11 +24,28 @@ jobs:
       fail-fast: false
       matrix:
         version: [ 4.19.215, 5.10.77 ]
+    env:
+      FC_KERNEL_VERSIONS: ${{ matrix.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Build kernel
-        run: make
-  release:
+        run: make build-fc
+  build-cloudhypervisor:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ 5.12 ]
+    env:
+      CH_KERNEL_VERSIONS: ${{ matrix.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build kernel
+        run: make build-ch
+  release-firecracker:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
@@ -39,7 +56,7 @@ jobs:
       matrix:
         version: [ 4.19.215, 5.10.77 ]
     env:
-      KERNEL_VERSIONS: ${{ matrix.version }}
+      FC_KERNEL_VERSIONS: ${{ matrix.version }}
     steps:
       - uses: actions/checkout@v2
       - name: Login to container registry
@@ -50,5 +67,29 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         run: |
-          make
-          make push
+          make build-fc
+          make push-fc
+  release-cloudhypervisor:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        version: [ 5.12 ]
+    env:
+      CH_KERNEL_VERSIONS: ${{ matrix.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to container registry
+        uses: docker/login-action@v1.10.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        run: |
+          make build-ch
+          make push-ch
