@@ -1,5 +1,4 @@
 ARG IMAGE_NAME
-
 FROM ${IMAGE_NAME}:dev AS builder
 
 ENV SRC_DIR=/usr/src            \
@@ -8,7 +7,6 @@ ENV SRC_DIR=/usr/src            \
     LINUX_REPO_URL=https://github.com/cloud-hypervisor/linux.git
 
 ARG KERNEL_VERSION
-ARG CH_VERSION
 
 RUN mkdir -p ${SRC_DIR} ${DIST_DIR} && \
     git clone --depth 1 --branch ch-${KERNEL_VERSION} ${LINUX_REPO_URL} ${LINUX_DIR} && \
@@ -16,7 +14,7 @@ RUN mkdir -p ${SRC_DIR} ${DIST_DIR} && \
 
 WORKDIR ${LINUX_DIR}
 
-COPY configs/linux-x86_64.config .config
+COPY cloud-hypervisor/configs/linux-x86_64-${KERNEL_VERSION}.config .config
 
 RUN make LOCALVERSION= olddefconfig
 RUN make LOCALVERSION= -j `nproc` all
