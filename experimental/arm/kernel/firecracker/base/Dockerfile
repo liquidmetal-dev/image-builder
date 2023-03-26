@@ -14,7 +14,7 @@ RUN mkdir -p ${SRC_DIR} ${DIST_DIR} && \
 
 WORKDIR ${LINUX_DIR}
 
-COPY configs/linux-arm64-${KERNEL_VERSION}.config .config
+COPY firecracker/configs/linux-arm64-${KERNEL_VERSION}.config .config
 
 RUN make LOCALVERSION= olddefconfig
 # -j32 tells the compiler to use 32 threads, if 32 threads are not available it will use as many as it can up to 32

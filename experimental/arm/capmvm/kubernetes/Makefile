@@ -1,20 +1,21 @@
+.PHONY: all buildx build-and-push
+
 DOCKER := docker
 BUILD_DATE:=$(shell date --rfc-3339=seconds)
 GIT_SHA:=$(shell git rev-parse HEAD)
 
 REGISTRY?=ghcr.io/weaveworks-liquidmetal
-IMAGE_NAME?=$(REGISTRY)/capmvm-kubernetes-arm
+IMAGE_NAME?=$(REGISTRY)/capmvm-k8s-os-arm
 CONTAINERD_VERSION?=1.6.0
 TAG?=$(shell git rev-parse --short HEAD)
 
-RELEASE_VERSIONS?=1.21.8 1.22.8 1.23.5 # RELEASE follows the kubernetes release
+RELEASE_VERSIONS?=1.21.8 1.22.3 1.22.8 1.23.5 # RELEASE follows the kubernetes release
 
 build-and-push: $(addprefix build-and-push-,$(RELEASE_VERSIONS))
-build-and-push-%: buildx
-	$(DOCKER) buildx build --platform arm64 -t $(IMAGE_NAME):$*  \
+build-and-push-%:
+	$(DOCKER) buildx build --platform linux/arm64 -t $(IMAGE_NAME):$*  \
 		--build-arg KUBERNETES_VERSION=$* \
 		--build-arg CONTAINERD_VERSION=$(CONTAINERD_VERSION) \
-		--build-arg BASE_REGISTRY=$(REGISTRY) \
 		--label "org.opencontainers.image.created"="$(BUILD_DATE)" \
 		--label "org.opencontainers.image.authors"="Liquid Metal Authors" \
 		--label "org.opencontainers.image.url"="https://github.com/weaveworks-liquidmetal/image-builder" \

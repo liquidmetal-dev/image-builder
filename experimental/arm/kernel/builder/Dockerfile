@@ -13,6 +13,5 @@ RUN apt-get update -y && \
         libssl-dev          \
         ca-certificates     \
         kmod                \
-        python3             \
         wget             && \
     update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 10
