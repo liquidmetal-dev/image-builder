@@ -2,10 +2,10 @@ ARG OS_VERSION=20.04
 FROM ubuntu:${OS_VERSION}
 
 ARG ARCH="arm64"
+ARG RUNNER_VERSION="2.303.0"
 
 ENV USER=ubuntu
 ENV WORK_DIR="/home/$USER/actions-runner"
-ENV RUNNER_VERSION=2.294.0
 
 RUN apt-get update && apt-get install -y \
         kmod \
