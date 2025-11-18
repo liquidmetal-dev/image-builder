@@ -61,8 +61,6 @@ RUN tar --no-overwrite-dir -C / -xzf cri-containerd-cni-${CONTAINERD_VERSION}-li
 RUN curl -fsSL https://pkgs.k8s.io/core:/stable:/v${KUBERNETES_MAJOR_MINOR}/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 RUN echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v${KUBERNETES_MAJOR_MINOR}/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
-RUN apt-get update && apt list --all-versions kubeadm
-
 RUN apt-get update && apt-get install -y \
     kubeadm=${KUBERNETES_FULL_VERSION}-1.1 \
     kubelet=${KUBERNETES_FULL_VERSION}-1.1 \
