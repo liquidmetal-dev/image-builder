@@ -1,21 +1,42 @@
-name: CAPMVMV (Manual) - Build and release
+name: CAPMVMV - Build and release
 
 on:
   workflow_dispatch:
-    branches: [main]
+    inputs:
+      k8s_version:
+        description: "K8s version (major.minor). For example 1.30"
+        required: true
+      k8s_patch_version:
+        description: "K8s patch version"
+        required: true
+        default: "0"
+      containerd_version:
+        description: "Containerd version (major.minor.patch). For example 1.7.27"
+        required: true
+      ubuntu_version:
+        description: "Ubuntu version"
+        required: true
+        default: "22.04"
+        type: choice
+        options:
+          - "22.04"
+          - "24.04"
+
+permissions:
+  id-token: write
+  contents: read
 
 defaults:
   run:
     working-directory: capmvm/kubernetes
 
 jobs:
-  release:
+  buildandpublish:
+    name: Build and publish CAPMVM
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
-      - uses: actions/checkout@v2
+      - name: checkout code
+        uses: actions/checkout@v5
       - name: Login to container registry
         uses: docker/login-action@v1.10.0
         with:
@@ -24,5 +45,5 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
         run: |
-          make
-          make push
+          UBUNTU_VERSION=${{ inputs.ubuntu_version }} CONTAINERD_VERSION=${{ inputs.containerd_version }} K8S_MAJOR_MINOR=${{ inputs.k8s_version }} K8S_FULL_VERSION=${{ inputs.k8s_version }}.${{ inputs.k8s_patch_version }} make build
+          UBUNTU_VERSION=${{ inputs.ubuntu_version }} CONTAINERD_VERSION=${{ inputs.containerd_version }} K8S_MAJOR_MINOR=${{ inputs.k8s_version }} K8S_FULL_VERSION=${{ inputs.k8s_version }}.${{ inputs.k8s_patch_version }} make push
