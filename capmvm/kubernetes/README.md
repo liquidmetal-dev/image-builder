@@ -1,10 +1,10 @@
-## OS images
+# OS images for CAPMVM
 
-The builder provides Operating System images for 4 Kubernetes versions:
-`1.21.8`, `1.22.3`, `1.22.8`, and `1.23.5`. The OS is Ubuntu `20.04`.
+The builder provides OS images based on Ubuntu suitable for use with Cluster API Provider Microvm (CAPMVM).
 
 These images can be used to provide the root volume for Microvms. They come with
 the following pre-installed:
+
 - `containerd`
 - `kubelet`
 - `kubeadm`
@@ -14,47 +14,36 @@ The builder can be found at `capmvm/kubernetes`.
 
 The resulting images can be added to Microvm specs like so:
 
-```
-ghcr.io/weaveworks-liquidmetal/capmvm-k8s-os:1.21.8
-ghcr.io/weaveworks-liquidmetal/capmvm-k8s-os:1.22.3
-ghcr.io/weaveworks-liquidmetal/capmvm-k8s-os:1.22.8
-ghcr.io/weaveworks-liquidmetal/capmvm-k8s-os:1.23.5
-```
-
-For platforms using versions older than [Flintlock `0.5.0`][fl5] and [CAPMVM `0.8.0`][cap8]
-us the following legacy images:
-
-```
-ghcr.io/weaveworks-liquidmetal/capmvm-kubernetes:X.X.X
+```text
+docker pull ghcr.io/liquidmetal-dev/capmvm-k8s-ubuntu-22.04:1.28.4
 ```
 
 ## Publishing new images
 
-New images are published automatically when merged to main by Github Actions.
-You should not need to manually publish new images to the `ghcr` account.
+New images are published by invoking the `CAPMVMV - Build and release` GitHub actions workflow.
 
 ### Adding new OS versions
 
-- Update the list of `RELEASE_VERSIONS` in `capmvm/kubernetes/Makefile`
+- Update the [workflow](../../.github/workflows/capmvm-kubernetes-manual.yml) and to the options for the `ubuntu_version` input.
 - Update any docs (like this one) with new version info
-- Update the [Liquid Metal docs][lm-docs] with new version info
 - Open a PR with your changes
 - Merge once checks and reviews pass
 
-Your new version will be automatically published.
+Then ask a maintainer to run the workflow to publish new images.
 
 ## Local development and custom images
 
 1. Fork this repo, clone your fork
-1. `cd` into `capmvm/kubernetes`
-1. Edit the `Dockerfile`
-1. Set your image registry `export REGISTRY=docker.io/foobar`
-1. If you only want to build one or a subset of kubernetes versions, set this with
-	`export RELEASE_VERSIONS=1.23.5`
-1. To change the version of Ubuntu, do `export OS_VERSION=22.04`
-1. Run `make build` to build the image and `make push` to push the image to your
-	registry
+2. `cd` into `capmvm/kubernetes`
+3. Edit the `Dockerfile`
+4. Set your image registry `export REGISTRY=docker.io/foobar`
+5. Export variables with the Ubuntu, Kubernetes and containerd versions. For example for Kubernetes v1.28.4:
 
-[fl5]: https://github.com/weaveworks-liquidmetal/flintlock/releases/tag/v0.5.0
-[cap8]: https://github.com/weaveworks-liquidmetal/cluster-api-provider-microvm/releases/tag/v0.8.0
-[lm-docs]: https://github.com/weaveworks-liquidmetal/site/blob/main/docs/guides/images.md
+```bash
+export UBUNTU_VERSION=22.04
+export CONTAINERD_VERSION=1.7.7
+export K8S_MAJOR_MINOR=1.28
+export K8S_FULL_VERSION=1.28.4
+```
+
+6. Run `make build` to build the image and `make push` to push the image to your registry
