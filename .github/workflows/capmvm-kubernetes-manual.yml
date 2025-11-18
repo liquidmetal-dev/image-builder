@@ -21,6 +21,7 @@ on:
         options:
           - "22.04"
           - "24.04"
+          - "20.04"
 
 permissions:
   id-token: write
