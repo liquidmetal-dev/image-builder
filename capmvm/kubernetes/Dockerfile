@@ -1,52 +1,53 @@
-ARG OS_VERSION=20.04
+ARG OS_VERSION=22.04
 FROM ubuntu:${OS_VERSION}
 
 ARG ARCH="amd64"
-ARG CONTAINERD_VERSION=1.5.9
+ARG CONTAINERD_VERSION=1.7.27
 # Kubernetes version will be used to keep the kubeadm, kubelet, and kubectl version consistent
-ARG KUBERNETES_VERSION=1.21.8
+ARG KUBERNETES_MAJOR_MINOR=1.30
+ARG KUBERNETES_FULL_VERSION=1.30.14
 
 RUN apt-get update && apt-get install -y \
-        kmod \
-        dbus \
-        iproute2 \
-        iputils-ping \
-        net-tools \
-        openssh-server \
-        dnsutils \
-        sudo \
-        curl \
-        cloud-init \
-        linux-image-virtual  \
-        less \
-        udev \
-        wget \
-        apt-transport-https \
-        ca-certificates \
-        gnupg2 \
-        software-properties-common \
-        libseccomp2 \
-        systemd \
-        jq && \
+    kmod \
+    dbus \
+    iproute2 \
+    iputils-ping \
+    net-tools \
+    openssh-server \
+    dnsutils \
+    sudo \
+    curl \
+    cloud-init \
+    linux-image-virtual  \
+    less \
+    udev \
+    wget \
+    apt-transport-https \
+    ca-certificates \
+    gnupg2 \
+    software-properties-common \
+    libseccomp2 \
+    systemd \
+    jq && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     sed -i -e 's/^AcceptEnv LANG LC_\*$/#AcceptEnv LANG LC_*/' /etc/ssh/sshd_config
 
 #### Let iptables see bridged traffic ###
 RUN echo "overlay \n\
-br_netfilter" >> /etc/modules-load.d/containerd.conf
+    br_netfilter" >> /etc/modules-load.d/containerd.conf
 
 # Setup required sysctl params, these persist across reboots.
 RUN echo "net.bridge.bridge-nf-call-iptables  = 1 \n\
-net.bridge.bridge-nf-call-ip6tables = 1 \n\
-net.ipv4.ip_forward                 = 1 \n\
-net.ipv6.conf.all.forwarding = 1 \n\
-net.ipv6.conf.all.disable_ipv6 = 0 \n\
-net.ipv4.tcp_congestion_control = bbr \n\
-vm.overcommit_memory = 1 \n\
-kernel.panic = 10 \n\
-net.ipv4.conf.all.rp_filter = 1 \n\
-kernel.panic_on_oops = 1" >> /etc/sysctl.d/99-kubernetes-cri.conf
+    net.bridge.bridge-nf-call-ip6tables = 1 \n\
+    net.ipv4.ip_forward                 = 1 \n\
+    net.ipv6.conf.all.forwarding = 1 \n\
+    net.ipv6.conf.all.disable_ipv6 = 0 \n\
+    net.ipv4.tcp_congestion_control = bbr \n\
+    vm.overcommit_memory = 1 \n\
+    kernel.panic = 10 \n\
+    net.ipv4.conf.all.rp_filter = 1 \n\
+    kernel.panic_on_oops = 1" >> /etc/sysctl.d/99-kubernetes-cri.conf
 
 # Apply sysctl params without reboot
 RUN sysctl --system
@@ -57,13 +58,15 @@ RUN tar --no-overwrite-dir -C / -xzf cri-containerd-cni-${CONTAINERD_VERSION}-li
 
 ### Add apt repos
 # Kubeadm, Kubelet, and Kubectl
-RUN curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-RUN echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+RUN curl -fsSL https://pkgs.k8s.io/core:/stable:/v${KUBERNETES_MAJOR_MINOR}/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v${KUBERNETES_MAJOR_MINOR}/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+RUN apt-get update && apt list --all-versions kubeadm
 
 RUN apt-get update && apt-get install -y \
-        kubeadm=${KUBERNETES_VERSION}-00 \
-        kubelet=${KUBERNETES_VERSION}-00 \
-        kubectl=${KUBERNETES_VERSION}-00 && \
+    kubeadm=${KUBERNETES_FULL_VERSION}-1.1 \
+    kubelet=${KUBERNETES_FULL_VERSION}-1.1 \
+    kubectl=${KUBERNETES_FULL_VERSION}-1.1 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     apt-mark hold kubelet kubeadm kubectl
@@ -72,8 +75,9 @@ RUN mkdir -p /etc/containerd && containerd config default > /etc/containerd/conf
 RUN rm /etc/cni/net.d/10-containerd-net.conflist
 RUN systemctl enable containerd
 
+RUN mkdir -p /etc/systemd/system/kubelet.service.d
 RUN echo '[Service] \n\
-Environment="KUBELET_EXTRA_ARGS=--container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock"' \
+    Environment="KUBELET_EXTRA_ARGS=--container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock"' \
     >> /etc/systemd/system/kubelet.service.d/0-containerd.conf
 
 RUN systemctl enable kubelet
