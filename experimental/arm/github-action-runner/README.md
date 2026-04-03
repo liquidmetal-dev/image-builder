@@ -11,5 +11,5 @@ versions. (And this image should also be versioned properly).
 [This script][script] can be used with this image to register a microvm as a
 runner:
 
-[mar]: https://github.com/weaveworks-liquidmetal/microvm-action-runner
-[script]: https://github.com/weaveworks-liquidmetal/microvm-action-runner/blob/main/pkg/microvm/userdata.sh
+[mar]: https://github.com/liquidmetal-dev/microvm-action-runner
+[script]: https://github.com/liquidmetal-dev/microvm-action-runner/blob/main/pkg/microvm/userdata.sh

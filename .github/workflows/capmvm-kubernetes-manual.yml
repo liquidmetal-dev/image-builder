@@ -36,6 +36,9 @@ jobs:
   buildandpublish:
     name: Build and publish CAPMVM
     runs-on: ubuntu-latest
+    env:
+      # Push to this repo's GHCR (e.g. ghcr.io/myownusername on a fork). Set vars.REGISTRY_OWNER to override.
+      REGISTRY: ghcr.io/${{ vars.REGISTRY_OWNER || github.repository_owner }}
     steps:
       - name: checkout code
         uses: actions/checkout@v5

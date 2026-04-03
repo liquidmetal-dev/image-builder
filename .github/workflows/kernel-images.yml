@@ -8,7 +8,8 @@ on:
   push:
     paths:
       - 'kernel/**'
-    branches: [main]
+    branches: [main, issue/*]
+  workflow_dispatch:
 
 defaults:
   run:
@@ -16,37 +17,56 @@ defaults:
 
 jobs:
   build-firecracker:
-    if: github.event_name != 'push'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        version: [ 4.19.215, 5.10.77 ]
+        # arm64 has configs only for 5.10.77 and 6.1.102
+        include:
+          - arch: amd64
+            version: 4.19.215
+          - arch: amd64
+            version: 5.10.77
+          - arch: amd64
+            version: 6.1.102
+          - arch: arm64
+            version: 5.10.77
+          - arch: arm64
+            version: 6.1.102
     env:
+      ARCH: ${{ matrix.arch }}
       FC_KERNEL_VERSIONS: ${{ matrix.version }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - name: Set up QEMU (arm64)
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx (arm64)
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-buildx-action@v3
       - name: Build kernel
         run: make build-fc
   build-cloudhypervisor:
-    if: github.event_name != 'push'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
     strategy:
       fail-fast: false
       matrix:
-        version: [ 5.12 ]
+        version: [5.12, 5.15.12]
     env:
+      ARCH: amd64
       CH_KERNEL_VERSIONS: ${{ matrix.version }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Build kernel
         run: make build-ch
   release-firecracker:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -54,13 +74,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [ 4.19.215, 5.10.77 ]
+        include:
+          - arch: amd64
+            version: 4.19.215
+          - arch: amd64
+            version: 5.10.77
+          - arch: amd64
+            version: 6.1.102
+          - arch: arm64
+            version: 5.10.77
+          - arch: arm64
+            version: 6.1.102
     env:
+      REGISTRY: ghcr.io/${{ vars.REGISTRY_OWNER || github.repository_owner }}
+      ARCH: ${{ matrix.arch }}
       FC_KERNEL_VERSIONS: ${{ matrix.version }}
+      PUSH: --push
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - name: Set up QEMU (arm64)
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx (arm64)
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-buildx-action@v3
       - name: Login to container registry
-        uses: docker/login-action@v1.10.0
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -70,7 +109,7 @@ jobs:
           make build-fc
           make push-fc
   release-cloudhypervisor:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -78,13 +117,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [ 5.12 ]
+        version: [5.12, 5.15.12]
     env:
+      REGISTRY: ghcr.io/${{ vars.REGISTRY_OWNER || github.repository_owner }}
+      ARCH: amd64
       CH_KERNEL_VERSIONS: ${{ matrix.version }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Login to container registry
-        uses: docker/login-action@v1.10.0
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}

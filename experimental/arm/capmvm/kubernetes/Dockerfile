@@ -2,9 +2,9 @@ ARG OS_VERSION=20.04
 FROM ubuntu:${OS_VERSION}
 
 ARG ARCH="arm64"
-ARG CONTAINERD_VERSION=1.6.0
-# Kubernetes version will be used to keep the kubeadm, kubelet, and kubectl version consistent
-ARG KUBERNETES_VERSION=1.21.8
+ARG CONTAINERD_VERSION=1.7.27
+ARG KUBERNETES_MAJOR_MINOR=1.30
+ARG KUBERNETES_FULL_VERSION=1.30.14
 
 RUN apt-get update && apt-get install -y \
         kmod \
@@ -51,19 +51,18 @@ kernel.panic_on_oops = 1" >> /etc/sysctl.d/99-kubernetes-cri.conf
 # Apply sysctl params without reboot
 RUN sysctl --system
 
-# Install Containerd
+# Install Containerd (same artifact pattern as x86 capmvm)
 RUN wget https://github.com/containerd/containerd/releases/download/v${CONTAINERD_VERSION}/cri-containerd-cni-${CONTAINERD_VERSION}-linux-${ARCH}.tar.gz
 RUN tar --no-overwrite-dir -C / -xzf cri-containerd-cni-${CONTAINERD_VERSION}-linux-${ARCH}.tar.gz && rm -f cri-containerd-cni-${CONTAINERD_VERSION}-linux-${ARCH}.tar.gz
 
-### Add apt repos
-# Kubeadm, Kubelet, and Kubectl
-RUN curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-RUN echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+### Add apt repos (pkgs.k8s.io, same as x86 capmvm)
+RUN curl -fsSL https://pkgs.k8s.io/core:/stable:/v${KUBERNETES_MAJOR_MINOR}/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v${KUBERNETES_MAJOR_MINOR}/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 RUN apt-get update && apt-get install -y \
-        kubeadm=${KUBERNETES_VERSION}-00 \
-        kubelet=${KUBERNETES_VERSION}-00 \
-        kubectl=${KUBERNETES_VERSION}-00 && \
+        kubeadm=${KUBERNETES_FULL_VERSION}-1.1 \
+        kubelet=${KUBERNETES_FULL_VERSION}-1.1 \
+        kubectl=${KUBERNETES_FULL_VERSION}-1.1 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     apt-mark hold kubelet kubeadm kubectl
@@ -72,6 +71,7 @@ RUN mkdir -p /etc/containerd && containerd config default > /etc/containerd/conf
 RUN rm /etc/cni/net.d/10-containerd-net.conflist
 RUN systemctl enable containerd
 
+RUN mkdir -p /etc/systemd/system/kubelet.service.d
 RUN echo '[Service] \n\
 Environment="KUBELET_EXTRA_ARGS=--container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock"' \
     >> /etc/systemd/system/kubelet.service.d/0-containerd.conf

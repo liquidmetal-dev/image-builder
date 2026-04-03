@@ -15,7 +15,7 @@ The builder can be found at `capmvm/kubernetes`.
 The resulting images can be added to Microvm specs like so:
 
 ```text
-docker pull ghcr.io/liquidmetal-dev/capmvm-k8s-ubuntu-22.04:1.28.4
+docker pull ghcr.io/liquidmetal-dev/capmvm-k8s-ubuntu-22.04-amd64:1.28.4
 ```
 
 ## Publishing new images
