@@ -4,7 +4,7 @@ DOCKER := docker
 BUILD_DATE:=$(shell date --rfc-3339=seconds)
 GIT_SHA:=$(shell git rev-parse HEAD)
 
-REGISTRY?=ghcr.io/weaveworks-liquidmetal
+REGISTRY?=ghcr.io/liquidmetal-dev
 IMAGE_NAME?=$(REGISTRY)/action-runner-arm
 TAG?=$(shell git rev-parse --short HEAD)
 
