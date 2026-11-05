@@ -18,17 +18,17 @@ The builder can be found at `capmvm/kubernetes`.
 The resulting images can be added to Microvm specs like so:
 
 ```
-ghcr.io/weaveworks-liquidmetal/capmvm-k8s-os-arm:1.21.8
-ghcr.io/weaveworks-liquidmetal/capmvm-k8s-os-arm:1.22.3
-ghcr.io/weaveworks-liquidmetal/capmvm-k8s-os-arm:1.22.8
-ghcr.io/weaveworks-liquidmetal/capmvm-k8s-os-arm:1.23.5
+ghcr.io/liquidmetal-dev/capmvm-k8s-os-arm:1.21.8
+ghcr.io/liquidmetal-dev/capmvm-k8s-os-arm:1.22.3
+ghcr.io/liquidmetal-dev/capmvm-k8s-os-arm:1.22.8
+ghcr.io/liquidmetal-dev/capmvm-k8s-os-arm:1.23.5
 ```
 
 For platforms using versions older than [Flintlock `0.5.0`][fl5] and [CAPMVM `0.8.0`][cap8]
 us the following legacy images:
 
 ```
-ghcr.io/weaveworks-liquidmetal/capmvm-kubernetes-arm:X.X.X
+ghcr.io/liquidmetal-dev/capmvm-kubernetes-arm:X.X.X
 ```
 
 ## Publishing new images
@@ -59,6 +59,6 @@ Your new version will be automatically published.
 1. Run `make build` to build the image and `make push` to push the image to your
 	registry
 
-[fl5]: https://github.com/weaveworks-liquidmetal/flintlock/releases/tag/v0.5.0
-[cap8]: https://github.com/weaveworks-liquidmetal/cluster-api-provider-microvm/releases/tag/v0.8.0
-[lm-docs]: https://github.com/weaveworks-liquidmetal/site/blob/main/docs/guides/images.md
+[fl5]: https://github.com/liquidmetal-dev/flintlock/releases/tag/v0.5.0
+[cap8]: https://github.com/liquidmetal-dev/cluster-api-provider-microvm/releases/tag/v0.8.0
+[lm-docs]: https://www.liquidmetal.dev/docs/component-info/images

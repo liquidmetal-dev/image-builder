@@ -26,18 +26,18 @@ creating the eventually used `bin` and `module` images is:
 The resulting images can be added to Microvm specs like so:
 
 ```
-ghcr.io/weaveworks-liquidmetal/firecracker-kernel-bin:X.X.X
-ghcr.io/weaveworks-liquidmetal/firecracker-kernel-modules:X.X.X
+ghcr.io/liquidmetal-dev/firecracker-kernel-bin:X.X.X
+ghcr.io/liquidmetal-dev/firecracker-kernel-modules:X.X.X
 
-ghcr.io/weaveworks-liquidmetal/cloudhypervisor-kernel-bin:X.X.X
-ghcr.io/weaveworks-liquidmetal/cloudhypervisor-kernel-modules:X.X.X
+ghcr.io/liquidmetal-dev/cloudhypervisor-kernel-bin:X.X.X
+ghcr.io/liquidmetal-dev/cloudhypervisor-kernel-modules:X.X.X
 ```
 
 For platforms using versions older than [Flintlock `0.5.0`][fl5] and [CAPMVM `0.8.0`][cap8]
 use the following legacy image for **firecracker** microvms:
 
 ```
-ghcr.io/weaveworks-liquidmetal/flintlock-kernel:X.X.X
+ghcr.io/liquidmetal-dev/flintlock-kernel:X.X.X
 ```
 
 **Note** the `filename` locations for each of the kernels:
@@ -86,6 +86,6 @@ _Note that Firecracker only supports `5.10` and `4.19` kernels._
 1. Run `make build-fc` or `make build-ch` to build the images and `make push-fc`
 	or `make push-ch` to push the images to your registry
 
-[fl5]: https://github.com/weaveworks-liquidmetal/flintlock/releases/tag/v0.5.0
-[cap8]: https://github.com/weaveworks-liquidmetal/cluster-api-provider-microvm/releases/tag/v0.8.0
-[lm-docs]: https://github.com/weaveworks-liquidmetal/site/blob/main/docs/guides/images.md
+[fl5]: https://github.com/liquidmetal-dev/flintlock/releases/tag/v0.5.0
+[cap8]: https://github.com/liquidmetal-dev/cluster-api-provider-microvm/releases/tag/v0.8.0
+[lm-docs]: https://www.liquidmetal.dev/docs/component-info/images
